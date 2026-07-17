@@ -1,5 +1,6 @@
 const Message = require('../models/Message');
 const Conversation = require('../models/Conversation');
+const {getReceiverSocketId,getIO} = require('../socket/socket');
 
 //Send a new message in a conversation
 exports.sendMessage = async(req, res) => {
@@ -21,8 +22,23 @@ exports.sendMessage = async(req, res) => {
 
         const fullMessage = await Message.findById(message._id).populate('sender','username profilePic isOnline');
 
-        res.status(201).json(fullMessage);
+        // res.status(201).json(fullMessage);
 
+        //Find the conversation to know who the other participant is
+        const conversation = await Conversation.findById(conversationId);
+        const receiverId = conversation.participants.find(
+            (participantId) =>participantId.toString() !== req.userId
+        );
+
+        if(receiverId){
+            const receiverSocketId = getReceiverSocketId(receiverId.toString());
+            if(receiverSocketId){
+                //Send the message to the receiver via socket.io
+                getIO().to(receiverSocketId).emit('newMessage', fullMessage);
+            }
+        }
+
+        res.status(201).json(fullMessage);
     }catch(error){
         res.status(500).json({message:'Failed to send message', error:error.message});
     }
