@@ -22,6 +22,22 @@ const initSocket = (server) => {
     // Let everyone know who's currently online
     io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
+    //Typing indicator
+    socket.on('typing',({receiverId,conversationId})=>{
+      const receiverSocketId = userSocketMap[receiverId];
+      if(receiverSocketId){
+        io.to(receiverSocketId).emit('userTyping',{conversationId,senderId:userId});
+      }
+    });
+
+    socket.on('stopTyping', ({ receiverId, conversationId }) => {
+      const receiverSocketId = userSocketMap[receiverId];
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('userStoppedTyping', { conversationId, senderId: userId });
+      }
+    });
+
+
     socket.on('disconnect', () => {
       console.log('A user disconnected:', socket.id);
       delete userSocketMap[userId];
