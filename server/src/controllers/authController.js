@@ -104,9 +104,18 @@ exports.refresh = async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+    const user = await User.findById(decoded.userId);
+    if(!user){
+      return res.status(401).json({ message: 'User not found' });
+    }
+
     const newAccessToken = generateAccessToken(decoded.userId);
 
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(200).json({ 
+      accessToken: newAccessToken, 
+      user:{id:user._id,username:user.username,email:user.email},
+    });
   } catch(error){
     res.status(403).json({ message: 'Invalid or expired refresh token' });
   }
