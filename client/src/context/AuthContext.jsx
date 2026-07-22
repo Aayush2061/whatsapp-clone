@@ -28,6 +28,17 @@ export const AuthProvider = ({children}) => {
         tryRefresh();
     },[]);
 
+    useEffect(() => {
+    const interceptor = api.interceptors.request.use((config) => {
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+      return config;
+    });
+
+    return () => api.interceptors.request.eject(interceptor);
+  }, [accessToken]);
+
     const register = async(username,email,password) =>{
         const res = await api.post('/auth/register',{username,email,password});
         setUser(res.data.user);
