@@ -56,40 +56,52 @@ function MessageThread({ conversation }) {
     }
 
  return (
-    <div className="flex flex-col h-full">
-      <div className="p-4 border-b font-semibold">{otherUser?.username}</div>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {messages.map((msg) => (
-          <div
-            key={msg._id}
-            className={`flex ${msg.sender._id === user.id ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`px-3 py-2 rounded-lg max-w-xs ${
-                msg.sender._id === user.id ? 'bg-green-500 text-white' : 'bg-gray-200'
-              }`}
-            >
-              {msg.content}
-            </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
+  <div className="flex flex-col h-full bg-[#F0F2F5]">
+    <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
+      <div className="w-9 h-9 rounded-full bg-[#00A884] flex items-center justify-center text-white font-medium text-sm">
+        {otherUser?.username?.[0]?.toUpperCase()}
       </div>
-
-      <form onSubmit={handleSend} className="p-4 border-t flex gap-2">
-        <input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 border rounded px-3 py-2"
-        />
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-          Send
-        </button>
-      </form>
+      <span className="font-medium text-[#111B21]">{otherUser?.username}</span>
     </div>
-  );
+
+    <div className="flex-1 overflow-y-auto p-4 space-y-1.5">
+      {messages.map((msg) => (
+        <div
+          key={msg._id}
+          className={`flex ${msg.sender._id === user.id ? 'justify-end' : 'justify-start'}`}
+        >
+          <div
+            className={`px-3 py-2 rounded-lg max-w-xs text-sm shadow-sm ${
+              msg.sender._id === user.id
+                ? 'bg-[#D9FDD3] text-[#111B21]'
+                : 'bg-white text-[#111B21]'
+            }`}
+          >
+            {msg.content}
+          </div>
+        </div>
+      ))}
+      <div ref={messagesEndRef} />
+    </div>
+
+    <form onSubmit={handleSend} className="p-3 bg-white border-t border-gray-200 flex gap-2">
+      <input
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        placeholder="Type a message"
+        className="flex-1 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#00A884] bg-[#F0F2F5]"
+      />
+      <button
+        type="submit"
+        className="bg-[#00A884] text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#008f6f] transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+      </button>
+    </form>
+  </div>
+);
 }
 
 export default MessageThread;
