@@ -9,6 +9,7 @@ const { initSocket } = require('./socket/socket');
 const authRoutes = require('./routes/authRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const server = http.createServer(app); // wrap Express app in a raw HTTP server
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
 
 
 const PORT = process.env.PORT || 5000;
