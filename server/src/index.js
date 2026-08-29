@@ -21,7 +21,7 @@ initSocket(server); //Initialize socket.io with the HTTP server
 
 // Middleware 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5500', 'http://localhost:5500'], // your future Vite frontend
+    origin: ['http://localhost:5173'], // your future Vite frontend
     credentials: true,
 }));
 app.use(express.json());

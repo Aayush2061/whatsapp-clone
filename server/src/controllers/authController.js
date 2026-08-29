@@ -1,6 +1,13 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
@@ -31,12 +38,7 @@ exports.register = async (req, res) => {
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
     res.status(201).json({
       user: { id: user._id, username: user.username, email: user.email },
@@ -69,12 +71,7 @@ exports.login = async(req,res) => {
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
     res.status(200).json({
       user: { id: user._id, username: user.username, email: user.email },
@@ -86,11 +83,11 @@ exports.login = async(req,res) => {
 }
 
 exports.logout = async (req, res) => {
-  res.clearCookie('refreshToken',{
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-  });
+  res.clearCookie('refreshToken', {
+  httpOnly: cookieOptions.httpOnly,
+  secure: cookieOptions.secure,
+  sameSite: cookieOptions.sameSite,
+});
   res.status(200).json({ message: 'Logged out successfully'
   });
 }
