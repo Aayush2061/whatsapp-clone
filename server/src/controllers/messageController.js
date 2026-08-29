@@ -45,16 +45,26 @@ exports.sendMessage = async (req, res) => {
 
 
 //Get all the message in the conversation
-exports.getMessages = async(req, res) => {
-    try{
-        const {conversationId} = req.params;
+exports.getMessages = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
 
-        const messages = await Message.find({conversationId})
-        .populate('sender','username profilePic')
-        .sort({createdAt:1}); //sort by created time, oldest first
-        
-        res.status(200).json(messages);
-    }catch(error){
-        res.status(500).json({message:'Failed to fetch messages', error:error.message});
+    const conversation = await Conversation.findById(conversationId);
+    const deletedEntry = conversation?.deletedFor.find(
+      (d) => d.user.toString() === req.userId
+    );
+
+    const filter = { conversationId };
+    if (deletedEntry) {
+      filter.createdAt = { $gt: deletedEntry.deletedAt }; // only messages sent AFTER the delete
     }
-}
+
+    const messages = await Message.find(filter)
+      .populate('sender', 'username profilePic')
+      .sort({ createdAt: 1 });
+
+    res.status(200).json(messages);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch messages', error: error.message });
+  }
+};

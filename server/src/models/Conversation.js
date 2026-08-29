@@ -9,8 +9,15 @@ const conversationSchema = new mongoose.Schema(
         groupName: {type:String, default:''}, //only used when isGroup is true
         groupAdmin: {type:mongoose.Schema.Types.ObjectId, ref:'User'}, //only used when isGroup is true
         lastMessage: {type:mongoose.Schema.Types.ObjectId, ref:'Message'},
-        hiddenFor:[{type:mongoose.Schema.Types.ObjectId, ref:'User'}]
-    },
+        archivedFor:[{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
+        deletedFor: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        deletedAt: { type: Date },
+      },
+    ],
+  },
+
     {timestamps:true}
 )
 
