@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 
-function MessageThread({ conversation }) {
+function MessageThread({ conversation,onBack }) {
   const { user } = useAuth();
   const { socket } = useSocket();
   const [messages, setMessages] = useState([]);
@@ -57,12 +57,17 @@ function MessageThread({ conversation }) {
 
  return (
   <div className="flex flex-col h-full bg-[#F0F2F5]">
-    <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
-      <div className="w-9 h-9 rounded-full bg-[#00A884] flex items-center justify-center text-white font-medium text-sm">
-        {otherUser?.username?.[0]?.toUpperCase()}
-      </div>
-      <span className="font-medium text-[#111B21]">{otherUser?.username}</span>
-    </div>
+    <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3 shrink-0">
+  <button onClick={onBack} className="md:hidden text-[#00A884] shrink-0">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  </button>
+  <div className="w-9 h-9 rounded-full bg-[#00A884] flex items-center justify-center text-white font-medium text-sm shrink-0">
+    {otherUser?.username?.[0]?.toUpperCase()}
+  </div>
+  <span className="font-medium text-[#111B21] truncate">{otherUser?.username}</span>
+</div>
 
     <div className="flex-1 overflow-y-auto p-4 space-y-1.5">
       {messages.map((msg) => (
@@ -71,11 +76,11 @@ function MessageThread({ conversation }) {
           className={`flex ${msg.sender._id === user.id ? 'justify-end' : 'justify-start'}`}
         >
           <div
-            className={`px-3 py-2 rounded-lg max-w-xs text-sm shadow-sm ${
-              msg.sender._id === user.id
-                ? 'bg-[#D9FDD3] text-[#111B21]'
-                : 'bg-white text-[#111B21]'
-            }`}
+            className={`px-3 py-2 rounded-lg max-w-[75%] sm:max-w-xs text-sm shadow-sm ${
+  msg.sender._id === user.id
+    ? 'bg-[#D9FDD3] text-[#111B21]'
+    : 'bg-white text-[#111B21]'
+}`}
           >
             {msg.content}
           </div>
