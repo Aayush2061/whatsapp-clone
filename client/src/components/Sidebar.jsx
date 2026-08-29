@@ -5,19 +5,28 @@ import { useSocket } from '../context/SocketContext';
 import NewChatModal from './NewChatModal';
 
 function Sidebar({ selectedConversation, setSelectedConversation }) {
-  const { user } = useAuth();
+  const { user,loading } = useAuth();
   const { socket } = useSocket();
   const [conversations, setConversations] = useState([]);
   const [showNewChat, setShowNewChat] = useState(false);
 
-  const fetchConversations = async () => {
+ const fetchConversations = async () => {
+  try {
     const res = await api.get('/conversations');
     setConversations(res.data);
-  };
+  } catch (error) {
+    console.error('Failed to fetch conversations:', error);
+  }
+};
 
   useEffect(() => {
+    if (loading) return; // wait until the auth check (refresh) has finished
     fetchConversations();
-  }, []);
+  }, [loading]);
+
+  // useEffect(() => {
+  //   fetchConversations();
+  // }, []);
 
   // Keep the sidebar live: update previews, reorder, and un-hide on any new message
   useEffect(() => {
