@@ -59,10 +59,12 @@ A few technical decisions worth noting:
 ```
    Create a `.env` file in `server/`:
 
+```
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_random_secret
 JWT_REFRESH_SECRET=your_random_refresh_secret
+```
 
    Run the server:
 ```bash
@@ -76,7 +78,9 @@ JWT_REFRESH_SECRET=your_random_refresh_secret
 ```
    Create a `.env` file in `client/`:
 
-   VITE_API_URL=http://localhost:5000
+  ```
+VITE_API_URL=http://localhost:5000
+```
 
       Run the frontend:
 ```bash
