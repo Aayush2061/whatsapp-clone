@@ -21,9 +21,10 @@ initSocket(server); //Initialize socket.io with the HTTP server
 
 // Middleware 
 app.use(cors({
-    origin: ['http://localhost:5173'], // your future Vite frontend
-    credentials: true,
+  origin: ['http://localhost:5173', 'https://whatsapp-clone-jade-alpha.vercel.app'],
+  credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRoutes);
